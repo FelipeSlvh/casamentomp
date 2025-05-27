@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Confirmação de Presença | Millka & Felipe</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f1f2;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 15px;
+    box-shadow: 0 12px 28px rgba(183, 110, 121, 0.3);
+    max-width: 480px;
+    width: 90%;
+    text-align: center;
+  }
+  h1 {
+    color: #b76e79;
+    margin-bottom: 10px;
+  }
+  p {
+    color: #333;
+    margin: 6px 0;
+  }
+  form {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  select, textarea, button {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+    font-family: inherit;
+  }
+  select {
+    cursor: pointer;
+  }
+  textarea {
+    resize: vertical;
+  }
+  button {
+    background-color: #b76e79;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.25s ease;
+  }
+  button:hover {
+    background-color: #9f5c65;
+  }
+  label {
+    text-align: left;
+    font-weight: 600;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Millka & Felipe</h1>
+  <p id="saudacao"></p>
+  <p><strong>Data:</strong> 24/07/2027</p>
+  <p><strong>Local:</strong> Decidindo o local, Maceió</p>
+  <p>Com alegria, convidamos você para compartilhar conosco este momento tão especial.</p>
+
+  <form id="rsvpForm" action="https://formspree.io/f/YOURENDPOINT" method="POST">
+    <input type="hidden" name="Convidado" id="convidadoNome" readonly />
+
+    <label for="confirmacao">Confirmação:</label>
+    <select id="confirmacao" name="Confirmação" required>
+      <option value="" disabled selected>Selecione</option>
+      <option value="Aceito">Aceito</option>
+      <option value="Recuso">Recuso</option>
+    </select>
+
+    <label for="mensagem">Observações/Mensagem:</label>
+    <textarea id="mensagem" name="Mensagem" rows="4" placeholder="Deixe uma mensagem (opcional)"></textarea>
+
+    <button type="submit">Confirmar Presença</button>
+  </form>
+</div>
+
+<script>
+  function decodeNome(raw) {
+    if (!raw) return "Convidado";
+    // Remove hífens e decodifica URL
+    return decodeURIComponent(raw).replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  // Pega o parâmetro "convidado" da URL
+  const params = new URLSearchParams(window.location.search);
+  const convidadoRaw = params.get("convidado");
+  const nomeConvidado = decodeNome(convidadoRaw);
+
+  // Atualiza saudação e campo oculto
+  document.getElementById("saudacao").textContent = `Olá, ${nomeConvidado}!`;
+  document.getElementById("convidadoNome").value = nomeConvidado;
+</script>
+
+</body>
+</html>

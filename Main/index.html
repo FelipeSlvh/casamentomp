@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LINKS DE CONVITE - Millka & Felipe</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/Style/style.css"
+      media="screen"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="main-title">CONFIRM LINKS | M&P</h1>
+      <p class="p-about">
+        Este gerador cria links de confirmação de presença. Basta inserir o nome
+        e sobrenome (ex.: Felipe Silva), clicar em 'Adicionar' para incluir na
+        lista e, após inserir todos, clicar em "Gerar Links".
+      </p>
+      <div class="input-group">
+        <input
+          type="text"
+          id="nomeConvidado"
+          placeholder="Digite o nome do convidado"
+          aria-label="Nome do convidado"
+        />
+        <button id="adicionarBtn">Adicionar</button>
+      </div>
+
+      <ul id="listaConvidados" aria-label="Lista de convidados"></ul>
+
+      <button id="gerarTodosBtn" disabled>GERAR LINKS</button>
+
+      <div class="links-result" id="resultadoLinks" style="display: none"></div>
+      <small>Copie e envie os links para seus convidados.</small>
+    </div>
+
+    <script>
+      const listaConvidadosEl = document.getElementById("listaConvidados");
+      const resultadoLinksEl = document.getElementById("resultadoLinks");
+      const adicionarBtn = document.getElementById("adicionarBtn");
+      const gerarTodosBtn = document.getElementById("gerarTodosBtn");
+      const nomeInput = document.getElementById("nomeConvidado");
+      const baseUrl =
+        window.location.origin + "/Invite Page/invite.html?convidado=";
+
+      let convidados = [];
+
+      function formatarNome(nome) {
+        return nome
+          .trim()
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "") // remove acentos
+          .replace(/\s+/g, "-") // espaços viram hífen
+          .replace(/[^a-z\-]/g, ""); // só letras e hífens
+      }
+
+      function atualizarLista() {
+        listaConvidadosEl.innerHTML = "";
+        convidados.forEach((nome, i) => {
+          const li = document.createElement("li");
+          li.textContent = nome;
+          listaConvidadosEl.appendChild(li);
+        });
+        gerarTodosBtn.disabled = convidados.length === 0;
+        resultadoLinksEl.style.display = "none";
+      }
+
+      adicionarBtn.addEventListener("click", () => {
+        const nome = nomeInput.value.trim();
+        if (!nome) {
+          alert("Por favor, digite um nome válido.");
+          return;
+        }
+        convidados.push(nome);
+        nomeInput.value = "";
+        nomeInput.focus();
+        atualizarLista();
+      });
+
+      nomeInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          adicionarBtn.click();
+        }
+      });
+
+      gerarTodosBtn.addEventListener("click", () => {
+        if (convidados.length === 0) return;
+        const links = convidados
+          .map((nome) => {
+            const nomeFormatado = formatarNome(nome);
+            return `${nome}:\n${baseUrl}${encodeURIComponent(nomeFormatado)}`;
+          })
+          .join("\n\n");
+
+        resultadoLinksEl.textContent = links;
+        resultadoLinksEl.style.display = "block";
+      });
+
+      // Inicializa lista vazia
+      atualizarLista();
+    </script>
+  </body>
+</html>
